@@ -1,0 +1,37 @@
+services:
+  db:
+    container_name: postgres
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'ny_taxi'
+    ports:
+      - '5433:5432'
+    volumes:
+      # Volume 1, local onde o Postgres guarda as tabelas)
+      - vol-pgdata:/var/lib/postgresql/data
+      
+      # Volume 2, pasta local (Bind Mount)
+      # Esquerda: A pasta no teu PC (./ significa "nesta pasta onde estou")
+      # Direita: Onde ela vai aparecer dentro do contentor
+      - ./dados:/mnt/dados_externos
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@pgadmin.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+    ports:
+      - "8080:80"
+    volumes:
+      - vol-pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  vol-pgdata:
+    name: vol-pgdata
+  vol-pgadmin_data:
+    name: vol-pgadmin_data
+  vol-data:
+    name: ./dados
